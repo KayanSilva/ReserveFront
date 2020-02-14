@@ -1,6 +1,7 @@
 import { MensagemView, NegociacoesView } from '../views/index';
 import { Negociacao, Negociacoes } from '../models/index';
-import { domInject } from '../helpers/decorators/index';
+import { domInject, throttle } from '../helpers/decorators/index';
+import { NegociacaoService } from '../services/index';
 
 export class NegociacaoController {
 
@@ -12,17 +13,19 @@ export class NegociacaoController {
 
   @domInject('#valor')
   private _inputValor: JQuery;
-  
+
   private _negociacoes = new Negociacoes();
   private _negociacoesView = new NegociacoesView('#negociacoesView');
   private _mensagemView = new MensagemView('#mensagemView');
+  private _negociacaoService = new NegociacaoService();
 
   constructor() {
     this._negociacoesView.update(this._negociacoes);
   }
 
-  adiciona(event: Event): void {
-    event.preventDefault();
+  @throttle()
+  adiciona() {
+
     let data = new Date(this._inputData.val().replace(/-/g, ','));
 
     if (!this._ehDiaUtil(data)) {
@@ -37,6 +40,20 @@ export class NegociacaoController {
     this._negociacoes.adiciona(negociacao);
     this._negociacoesView.update(this._negociacoes);
     this._mensagemView.update('Negociação adicionada com sucesso.');
+  }
+
+  @throttle()
+  importarDados() {
+
+    this._negociacaoService.obterNegociacoes(res => {
+      if (res.ok) return res;
+      throw new Error(res.statusText);
+    })
+      .then(negociacoes => {
+        negociacoes.forEach(negociacao =>
+          this._negociacoes.adiciona(negociacao));
+        this._negociacoesView.update(this._negociacoes);
+      });
   }
 
   private _ehDiaUtil(data: Date): boolean {

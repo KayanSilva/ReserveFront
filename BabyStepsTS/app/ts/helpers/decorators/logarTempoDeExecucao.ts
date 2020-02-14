@@ -1,4 +1,4 @@
-export function logarTempoDeExecucao(emSegundos : booleanl = false) {
+export function logarTempoDeExecucao(emSegundos : boolean = false) {
     return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
 
         const metodoOriginal = descriptor.value;
