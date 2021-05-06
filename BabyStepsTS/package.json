@@ -13,9 +13,9 @@
   "author": "Kayan Florencio",
   "license": "ISC",
   "devDependencies": {
-    "@types/jquery": "^2.0.54",
+    "@types/jquery": "^2.0.56",
     "concurrently": "^3.6.1",
-    "lite-server": "^2.5.4",
+    "lite-server": "^2.6.1",
     "typescript": "^2.9.2"
   }
 }
